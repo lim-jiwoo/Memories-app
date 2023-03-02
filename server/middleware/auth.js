@@ -20,7 +20,7 @@ const auth = async (req, res, next) => {
         } else {
             decodedData = jwt.decode(token);
 
-            req.userId = decodedData?.id; // sub = Google specific id that differentiates every single Google user. 
+            req.userId = decodedData?.sub; // sub = Google specific id that differentiates every single Google user. 
         }
 
         next(); // So we can pass the action onto the second thing. 

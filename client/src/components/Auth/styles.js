@@ -27,4 +27,8 @@ export default makeStyles((theme) => ({
   googleButton: {
     marginBottom: theme.spacing(2),
   },
+  toggleButton: {
+    justifyContent: 'flex-end',
+    marginTop: theme.spacing(3),
+  },
 }));

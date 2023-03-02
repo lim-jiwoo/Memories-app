@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { AppBar, Typography, Toolbar, Avatar, Button } from '@material-ui/core';
 import { Link, useHistory, useLocation } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import decode from 'jwt-decode';
+import { googleLogout } from '@react-oauth/google';
+import jwt_decode from 'jwt-decode';
 
 import memoriesLogo from '../../images/memoriesLogo.png';
 import memoriesText from '../../images/memoriesText.png';
@@ -18,6 +19,7 @@ const Navbar = () => { // 단축키 `rafce`
 
   const logout = () => { // 이것만 해선 local storage에 데이터가 그대로 남아있고, refresh하면 다시 로그인된 상태로 돌아온다. Reducers도 수정해야함.
     dispatch({ type: actionType.LOGOUT });
+    googleLogout();
 
     history.push('/auth');
 
@@ -32,7 +34,7 @@ const Navbar = () => { // 단축키 `rafce`
 
     // Check if the token has expired.
     if (token) {
-      const decodedToken = decode(token);
+      const decodedToken = jwt_decode(token);
 
       if (decodedToken.exp * 1000 < new Date().getTime()) logout(); // exp is milliseconds, so *1000
     }

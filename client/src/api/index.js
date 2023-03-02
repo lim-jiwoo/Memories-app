@@ -8,8 +8,9 @@ const API = axios.create({ baseURL: process.env.REACT_APP_SERVER_URL });
 // We have to send our token back to the backend so that the backend middleware can varity that we're actually logged in. Middleware will not work without this.
 // The following will happen for+before ea req below.
 API.interceptors.request.use((req) => {
-  if (localStorage.getItem('profile')) {
-    req.headers.Authorization = `Bearer ${JSON.parse(localStorage.getItem('profile')).token}`;
+  const user = localStorage.getItem('profile');
+  if (user) {
+    req.headers.Authorization = `Bearer ${JSON.parse(user).token}`;
   }
 
   // With interceptors, need to return actual req to make future reqs.
