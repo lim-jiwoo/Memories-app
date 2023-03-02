@@ -20,7 +20,7 @@ const Post = ({ post, setCurrentId }) => {
   // like 수에 따라 like 인지 likes 인지, 또 내가 좋아했는지 다른 사람이 좋아했는지에 따라 메시지를 달리 하기 위한 로직.
   const Likes = () => {
     if (post?.likes?.length > 0) {
-      return post.likes.find((like) => like === (user?.result?.googleId || user?.result?._id))
+      return post.likes.find((like) => like === user?.result?._id)
         ? (
           <><ThumbUpAltIcon fontSize="small" />&nbsp;{post.likes.length > 2 ? `You and ${post.likes.length - 1} others` : `${post.likes.length} like${post.likes.length > 1 ? 's' : ''}` }</>
         ) : (
@@ -52,7 +52,7 @@ const Post = ({ post, setCurrentId }) => {
           <Typography variant="h6">{post.name}</Typography>
           <Typography variant="body2">{moment(post.createdAt).fromNow()}</Typography>
         </div>
-        {(user?.result?.googleId === post?.creator || user?.result?._id === post?.creator) && (
+        {user?.result?._id === post?.creator && (
         <div className={classes.overlay2} name="edit">
           <Button
             onClick={(e) => {
@@ -79,7 +79,7 @@ const Post = ({ post, setCurrentId }) => {
           <Likes />
         </Button>
         {/* 현재 유저가 만든 경우에만 삭제 '버튼이 보이도록' */}
-        {(user?.result?.googleId === post?.creator || user?.result?._id === post?.creator) && (
+        {user?.result?._id === post?.creator && (
           <Button size="small" color="secondary" onClick={() => dispatch(deletePost(post._id))}>
             <DeleteIcon fontSize="small" /> &nbsp; Delete
           </Button>

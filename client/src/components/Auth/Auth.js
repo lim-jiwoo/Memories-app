@@ -2,10 +2,9 @@ import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { Avatar, Button, Paper, Grid, Typography, Container } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
-import { GoogleLogin } from 'react-google-login';
+import { GoogleLogin } from '@react-oauth/google';
+import jwt_decode from 'jwt-decode';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-
-import Icon from './icon';
 import { signin, signup } from '../../actions/auth';
 import { AUTH } from '../../constants/actionTypes';
 import useStyles from './styles';
@@ -42,12 +41,16 @@ const SignUp = () => {
   };
 
   const googleSuccess = async (res) => {
-    const result = res?.profileObj; // ?. : Will not throw an error, but simply result = 'undefined', if we don't have access to `res`. Otherwise, if `res` doesn't exist, 'canot get property profileObj of undefined'
-    const token = res?.tokenId;
+    const token = res?.credential;
+    const decode = jwt_decode(res?.credential);
+    const result = {
+      name: decode?.name,
+      imageUrl: decode?.picture,
+      _id: decode?.sub,
+    };
 
     try {
       dispatch({ type: AUTH, data: { result, token } });
-
       history.push('/');
     } catch (error) {
       console.log(error);
@@ -82,17 +85,10 @@ const SignUp = () => {
             { isSignup ? 'Sign Up' : 'Sign In' }
           </Button>
           <GoogleLogin
-            clientId="479763931748-suq3lqf5ja08jalgrfl1b33degiusclp.apps.googleusercontent.com"
-            render={(renderProps) => ( // Instant return, not {}
-              <Button className={classes.googleButton} color="primary" fullWidth onClick={renderProps.onClick} disabled={renderProps.disabled} startIcon={<Icon />} variant="contained">
-                Google Sign In
-              </Button>
-            )}
             onSuccess={googleSuccess}
             onFailure={googleError}
-            cookiePolicy="single_host_origin"
           />
-          <Grid container justify="flex-end">
+          <Grid container className={classes.toggleButton}>
             <Grid item>
               <Button onClick={switchMode}>
                 { isSignup ? 'Already have an account? Sign in' : "Don't have an account? Sign Up" }
